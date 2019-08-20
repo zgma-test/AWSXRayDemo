@@ -7,7 +7,9 @@ exports.handler = function (event, context, callback) {
 
     ddb.put({
         TableName: 'BTMenu',
-        Item: { 'itemCode': 1 }
+        Item: {
+            'itemCode': 'i1'
+        }
     }).promise()
         .then((data) => {
             console.log("Successfully saved entry");

@@ -22,7 +22,7 @@
         "children": [],
         "isRemovable": true,
         "filePath": "AWSXRayDemo/lambda.js",
-        "code": "let xRay = require(\"aws-xray-sdk\");\nlet AWS = xRay.captureAWS(require('aws-sdk'));\nconst sns = new AWS.SNS();\nconst ddb = new AWS.DynamoDB.DocumentClient();\n\nexports.handler = function (event, context, callback) {\n\n    ddb.put({\n        TableName: 'BTMenu',\n        Item: { 'itemCode': 1 }\n    }).promise()\n        .then((data) => {\n            console.log(\"Successfully saved entry\");\n            sendSNSNotification(\"Successfully saved entry\", callback);\n        })\n        .catch((err) => {\n            console.log(\"Failed to save entry\", err);\n            sendSNSNotification(\"Failed to save entry\", callback);\n        });\n}\n\nfunction sendSNSNotification(message, callback) {\n    sns.publish({\n        Message: message,\n        MessageAttributes: {},\n        MessageStructure: 'String',\n        TopicArn: 'arn:aws:sns:us-east-1:318300609668:udith-test'\n    }).promise()\n        .then(data => {\n            console.log(\"Sent notification\", message);\n            callback(null, \"Sent notification\");\n        })\n        .catch(err => {\n            console.log(\"Failed to send notification\", message);\n            callback(null, \"Notification sending failed\");\n        });\n}",
+        "code": "let xRay = require(\"aws-xray-sdk\");\nlet AWS = xRay.captureAWS(require('aws-sdk'));\nconst sns = new AWS.SNS();\nconst ddb = new AWS.DynamoDB.DocumentClient();\n\nexports.handler = function (event, context, callback) {\n\n    ddb.put({\n        TableName: 'BTMenu',\n        Item: {\n            'itemCode': 'i1'\n        }\n    }).promise()\n        .then((data) => {\n            console.log(\"Successfully saved entry\");\n            sendSNSNotification(\"Successfully saved entry\", callback);\n        })\n        .catch((err) => {\n            console.log(\"Failed to save entry\", err);\n            sendSNSNotification(\"Failed to save entry\", callback);\n        });\n}\n\nfunction sendSNSNotification(message, callback) {\n    sns.publish({\n        Message: message,\n        MessageAttributes: {},\n        MessageStructure: 'String',\n        TopicArn: 'arn:aws:sns:us-east-1:318300609668:udith-test'\n    }).promise()\n        .then(data => {\n            console.log(\"Sent notification\", message);\n            callback(null, \"Sent notification\");\n        })\n        .catch(err => {\n            console.log(\"Failed to send notification\", message);\n            callback(null, \"Notification sending failed\");\n        });\n}",
         "config": {
           "runtime": "nodejs8.10",
           "handler": "handler",
@@ -84,11 +84,10 @@
           },
           "isGlobalEditMode": false,
           "parameters": {
-            "Key": {},
+            "TableName": "BTMenu",
             "Item": {
-              "itemCode": 1
-            },
-            "ExpressionAttributeValues": {}
+              "itemCode": "i1"
+            }
           },
           "triggerParams": {},
           "validator": {
@@ -149,7 +148,7 @@
     "projectRegion": "us-east-1",
     "platform": "AWS",
     "platformRegions": {},
-    "lastSave": 1566286050404
+    "lastSave": 1566286866975
   },
   "VCS_STATE": {
     "provider": "GitHub",
