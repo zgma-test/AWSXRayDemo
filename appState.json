@@ -1,0 +1,161 @@
+{
+  "EDITOR_STATE": {
+    "allProjectFiles": {
+      "b0fb5942-6159-404b-93ad-249f55178093": {
+        "id": "b0fb5942-6159-404b-93ad-249f55178093",
+        "parent": null,
+        "name": "AWSXRayDemo",
+        "type": "DIRECTORY",
+        "isDirectory": true,
+        "children": [
+          "4d873a54-0baf-43f4-afb4-df1e60df1b4d"
+        ],
+        "isRemovable": false,
+        "filePath": "AWSXRayDemo"
+      },
+      "4d873a54-0baf-43f4-afb4-df1e60df1b4d": {
+        "id": "4d873a54-0baf-43f4-afb4-df1e60df1b4d",
+        "parent": "b0fb5942-6159-404b-93ad-249f55178093",
+        "name": "lambda.js",
+        "type": "JS_LAMBDA",
+        "isDirectory": false,
+        "children": [],
+        "isRemovable": true,
+        "filePath": "AWSXRayDemo/lambda.js",
+        "code": "let xRay = require(\"aws-xray-sdk\");\nlet AWS = xRay.captureAWS(require('aws-sdk'));\nconst sns = new AWS.SNS();\nconst ddb = new AWS.DynamoDB.DocumentClient();\n\nexports.handler = function (event, context, callback) {\n\n    ddb.put({\n        TableName: 'BTMenu',\n        Item: { 'itemCode': 1 }\n    }).promise()\n        .then((data) => {\n            console.log(\"Successfully saved entry\");\n            sendSNSNotification(\"Successfully saved entry\", callback);\n        })\n        .catch((err) => {\n            console.log(\"Failed to save entry\", err);\n            sendSNSNotification(\"Failed to save entry\", callback);\n        });\n}\n\nfunction sendSNSNotification(message, callback) {\n    sns.publish({\n        Message: message,\n        MessageAttributes: {},\n        MessageStructure: 'String',\n        TopicArn: 'arn:aws:sns:us-east-1:318300609668:udith-test'\n    }).promise()\n        .then(data => {\n            console.log(\"Sent notification\", message);\n            callback(null, \"Sent notification\");\n        })\n        .catch(err => {\n            console.log(\"Failed to send notification\", message);\n            callback(null, \"Notification sending failed\");\n        });\n}",
+        "config": {
+          "runtime": "nodejs8.10",
+          "handler": "handler",
+          "timeout": 60,
+          "memory": 128,
+          "layers": [],
+          "xRayEnabled": true
+        },
+        "triggers": [
+          {
+            "resourceName": "apigusEast1XRayAPItestany",
+            "config": {}
+          }
+        ]
+      }
+    },
+    "deletedFiles": [],
+    "rootNode": "b0fb5942-6159-404b-93ad-249f55178093",
+    "openFiles": [
+      "4d873a54-0baf-43f4-afb4-df1e60df1b4d"
+    ],
+    "currentFileId": "4d873a54-0baf-43f4-afb4-df1e60df1b4d",
+    "resources": {
+      "apigusEast1XRayAPItestany": {
+        "name": "apigusEast1XRayAPItestany",
+        "type": "API_GATEWAY",
+        "config": {
+          "selectedRegion": "us-east-1",
+          "apiMode": 0,
+          "apiName": "XRayAPI",
+          "endpointType": "EDGE",
+          "resourceMode": 0,
+          "resourceName": "test",
+          "resourcePath": "/test",
+          "restMethod": "ANY",
+          "proxyIntegration": false,
+          "enableCORS": true,
+          "stageMode": 0,
+          "stageName": "test",
+          "mode": 0
+        }
+      },
+      "ddbBTMenu": {
+        "name": "ddbBTMenu",
+        "type": "DynamoDB",
+        "config": {
+          "mode": 1,
+          "operation": "put",
+          "table": {
+            "arn": "arn:aws:dynamodb:us-east-1:318300609668:table/BTMenu",
+            "name": "BTMenu",
+            "partitionKey": "itemCode",
+            "partitionKeyType": "S",
+            "hasSortKey": false,
+            "sortKey": "",
+            "sortKeyType": "S",
+            "payPerRequest": true,
+            "mode": 1
+          },
+          "isGlobalEditMode": false,
+          "parameters": {
+            "Key": {},
+            "Item": {
+              "itemCode": 1
+            },
+            "ExpressionAttributeValues": {}
+          },
+          "triggerParams": {},
+          "validator": {
+            "validatableFields": {},
+            "validity": true
+          },
+          "valid": true
+        }
+      },
+      "snsusEast1udithTest": {
+        "name": "snsusEast1udithTest",
+        "type": "SNS",
+        "config": {
+          "topicMode": 1,
+          "topicName": "udith-test",
+          "topicArn": "arn:aws:sns:us-east-1:318300609668:udith-test",
+          "topicRegion": "us-east-1",
+          "snsType": 0,
+          "subscriptions": []
+        }
+      }
+    },
+    "customTemplate": {
+      "dialect": null,
+      "definitions": {}
+    },
+    "envVariables": [
+      {
+        "lambdaId": "all",
+        "varKey": "SIGMA_AWS_ACC_ID",
+        "varValue": null,
+        "shouldPersist": false,
+        "displayOnly": false,
+        "editable": false
+      }
+    ],
+    "packageJSON": {
+      "dependencies": {
+        "aws-sdk": {
+          "name": "aws-sdk",
+          "language": "javascript",
+          "version": "2.176.0",
+          "dev": true,
+          "notRemovable": false
+        },
+        "aws-xray-sdk": {
+          "name": "aws-xray-sdk",
+          "version": "2.3.4",
+          "language": "javascript"
+        }
+      }
+    }
+  },
+  "PROJECT_META": {
+    "projectName": "AWSXRayDemo",
+    "projectDescription": "",
+    "projectVersion": "1.0.0",
+    "projectRegion": "us-east-1",
+    "platform": "AWS",
+    "platformRegions": {},
+    "lastSave": 1566286050404
+  },
+  "VCS_STATE": {
+    "provider": "GitHub",
+    "repo": {
+      "name": "AWSXRayDemo",
+      "url": "https://github.com/zgma-test/AWSXRayDemo"
+    }
+  }
+}
